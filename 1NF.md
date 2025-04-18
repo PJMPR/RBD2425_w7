@@ -39,7 +39,41 @@ Tabela znajduje się w **pierwszej postaci normalnej**, jeśli:
 
 - wszystkie kolumny zawierają **wartości atomowe** (niepodzielne),
 - każdy rekord ma jednoznacznie określoną wartość dla każdej kolumny,
-- nie zawiera zagnieżdżonych list, powtarzających się kolumn lub struktur.
+- nie zawiera:
+  - 🔁 **zagregowanych list** (np. wartości oddzielonych przecinkami),
+  - 📦 **zagnieżdżonych struktur** (np. JSON lub tablic w kolumnach),
+  - 🧱 **powtarzających się kolumn** (np. kolumny o nazwach `product1`, `product2`, `product3`).
+
+### 🧩 Przykłady naruszenia zasad 1NF
+
+Poniżej trzy przykłady tabel, które naruszają różne założenia pierwszej postaci normalnej (1NF):
+
+#### 🔁 Zagregowana lista w kolumnie:
+
+| customer_id | customer_name  | orders                        |
+|-------------|----------------|-------------------------------|
+| 1           | Anna Kowalska  | TV:2, Laptop:1, Phone:3        |
+| 2           | Jan Nowak      | Monitor:2, Tablet:1            |
+
+➡️ Kolumna `orders` zawiera wartości złożone – to zagregowana lista, trudna do filtrowania czy relacji z innymi tabelami. są zapisane w jednej kolumnie jako lista – trudne do analizy.
+
+#### 📦 Zagnieżdżona struktura (np. JSON):
+
+| customer_id | customer_name  | address                                      |
+|-------------|----------------|----------------------------------------------|
+| 1           | Anna Kowalska  | { "street": "Zielona", "city": "Łódź" }     |
+| 2           | Jan Nowak      | { "street": "Lipowa", "city": "Warszawa" }  |
+
+➡️ Kolumna `address` zawiera zagnieżdżoną strukturę JSON – trudna do analizy i zapytań SQL. – nie można łatwo sortować, filtrować czy łączyć po poszczególnych polach.
+
+#### 🧱 Powtarzające się kolumny:
+
+| customer_id | customer_name  | favorite_product_1 | favorite_product_2 | favorite_product_3 |
+|-------------|----------------|---------------------|---------------------|---------------------|
+| 1           | Anna Kowalska  | TV                  | Laptop              | Phone               |
+| 2           | Jan Nowak      | Tablet              | Monitor             | NULL                |
+
+➡️ Powtarzające się kolumny powodują trudności w rozbudowie, analizie i relacjach z tabelą produktów. – trudna w skalowaniu i analizie, np. brak możliwości prostego JOIN po ulubionych produktach.
 
 ---
 
@@ -76,4 +110,6 @@ INSERT INTO normalized_orders VALUES
 ```
 
 ---
+
+
 
